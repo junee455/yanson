@@ -3,12 +3,7 @@
 
 <!-- header -->
 
-<div class="flex-right"
-     style="border: 5px solid;
-	    border-left-color: transparent;
-	    border-right-color: transparent;
-	    border-top: none;
-	    border-radius: 10px;">
+<div class="header flex-right">
     <!-- <div class="header-button">theme</div> -->
     <div class="fit-width header-button" title="language">en</div>
     <span></span>
@@ -34,18 +29,26 @@
 
 
 <div style="display: grid;
-	    grid-template-columns: 33% 33% 33%;
+	    grid-template-columns: 33.33% 33.33% 33.33%;
+	    padding: 0;
+	    margin: 0;
 	    flex-direction: row;">
     <div class="font-x3 text-c"
-	 style="color: #b1d109;">Advanced editing tools</div>
+	 style="color: #b1d109;
+		padding: 0;
+		margin: 0;">Advanced editing tools</div>
     <div class="font-x3 text-c"
-	 style="color: #09d1c4;">Two-dimentional page</div>
+	 style="color: #d10978;
+		padding: 0;
+		margin: 0;">Custom design<br/>and theming</div>
     <div class="font-x3 text-c"
-	 style="color: #d10978;">Custom design<br/>and theming</div>
-
+	 style="color: #09d1c4;
+		padding: 0;
+		margin: 0;">Two-dimentional page</div>
+    
     <div style="padding: 30px;"><span></span>Actualy, nothing more than several options for fancy markup</div>
-    <div style="padding: 30px;"><span></span>Yes, now your profile looks more like a dashboard than like a regular one-direction page</div>
     <div style="padding: 30px;"><span></span>Nice chance to express yourself and optimize the interface, within responsable limits of course</div>
+    <div style="padding: 30px;"><span></span>Yes, now your profile looks more like a dashboard than like a regular one-direction page</div>
     
     <!-- first feature -->
     
@@ -54,7 +57,7 @@
 		margin: 10px;">
 	<div style="width: 50%;">
 	    <div class="placeholder-text"></div>
-	    <div class="placeholder-text"></div>
+	    <!-- <div class="placeholder-text"></div> -->
 	    <div class="placeholder-img img-filter"></div>
 	    <div class="placeholder-text"></div>
 	</div>
@@ -67,14 +70,57 @@
     </div>
     
     <!-- second feature -->
+    <div style="display: grid;
+		grid-template-rows:18% 18% 18% 18% 28%;
+		grid-template-columns: 28.5% 28.5% 14% 14% 14%;
+		margin: 10px;
+		border: 3px dashed grey;">
+	<div class="placeholder-card flex-left theme-demo"
+	     style="grid-column: 2 / 4;
+		    padding-top: -5px;">
+	    <div>themes</div>
+	    <div class="circle" style="border-color: #b1d109;"></div>
+	    <div class="circle" style="border-color: #09d1c4"></div>
+	    <div class="circle" style="border-color: #d10978;"></div>
+	</div>
+	<div class="placeholder-card placeholder-theme theme-demo-pick img-filter"
+	     style="grid-row: 2 / 4;"></div>
+	
+	<div class="placeholder-card placeholder-menu theme-demo"
+	     style="grid-row: 1 / 2;
+		    grid-column: 4 / 5;">
+	</div>
+	<div class="placeholder-card theme-demo"
+	     style="grid-row: 2 / 4;">
+	    <div class="placeholder-text"
+		 style="transform: scale(0.7);
+			margin: 0;"></div>
+	</div>
+	<div class="placeholder-card theme-demo"
+	     style="padding-left: 10%;
+		    grid-row: 2 / 5;
+		    grid-column: 4 / 6;">
+	    <span></span>
+	    <div class="placeholder-music"></div>
+	    <div class="placeholder-music"></div>
+	    <div class="placeholder-music"></div>
+	    <div class="placeholder-music"></div>
+	    <div class="placeholder-music"></div>
+	</div>
+	<div class="placeholder-card placeholder-img img-filter"
+	     style="grid-row: 4 / 6;
+		    grid-column: 2 / 4;"></div>
+    </div>
+    <!-- third feature -->
     
+   
     <div style="display: grid;
 		grid-template-columns: 25% 25% 25% 25%;
 		grid-template-rows: 50% 50%;
 		margin: 10px;
-		height: 70%;
 		border: 3px dashed grey;">
-		
+	<!-- 	height: 70%; -->
+	
 	<div class="placeholder-empty"
 	     style="border: 3px dashed grey;"></div>
 	<div class="placeholder-card flex-left"
@@ -101,6 +147,7 @@
 		    z-index: 10;">
 	    <div class="placeholder-card"
 		 style="porition: absolute;
+			background-color: white;
 			width: 90px;
 			height: 130px;
 			margin: 0;
@@ -115,50 +162,9 @@
 	     style="grid-column: 3 / 5;"></div>
     </div>
 
-    <!-- third feature -->
-    
-    <div style="display: grid;
-		grid-template-rows:14% 14% 14% 14% 42%;
-		grid-template-columns: 28.5% 28.5% 14% 14% 14%;
-		margin: 10px;
-		border: 3px dashed grey;">
-	<div class="placeholder-card flex-left theme-demo"
-	     style="grid-column: 2 / 4;
-		    padding-top: -5px;">
-	    <div>themes</div>
-	    <div class="circle" style="border-color: #b1d109;"></div>
-	    <div class="circle" style="border-color: #09d1c4"></div>
-	    <div class="circle" style="border-color: #d10978;"></div>
-	</div>
-	<div class="placeholder-card placeholder-theme theme-demo-pick  img-filter"
-	     style="grid-row: 2 / 4;"></div>
-	
-	<div class="placeholder-card placeholder-menu theme-demo"
-	     style="grid-row: 2 / 3;
-		    grid-column: 5 / 6;">
-	</div>
-	<div class="placeholder-card theme-demo"
-	     style="grid-row: 3 / 5;">
-	    <div class="placeholder-text"
-		 style="transform: scale(0.7);
-			margin: 0;"></div>
-	</div>
-	<div class="placeholder-card theme-demo"
-	     style="padding-left: 10%;
-		    grid-row: 3 / 5;
-		    grid-column: 4 / 6;">
-	    <div class="placeholder-music"></div>
-	    <div class="placeholder-music"></div>
-	    <div class="placeholder-music"></div>
-	    <div class="placeholder-music"></div>
-	</div>
-	<div class="placeholder-card placeholder-img img-filter"
-	     style="grid-row: 5 / 6;
-		    grid-column: 2 / 5;"></div>
-    </div>
 </div>
 
-<div class="text-l margin-c font-x2 fit-width"> Do you beileve in magic?<br/>Let's
+<div class="text-l margin-c font-x2 fit-width"> Do you believe in magic?<br/>Let's
     <a routerLink="/sign-up"
        class="nowrap mock-button start-button">GET STARTED</a>
 </div>

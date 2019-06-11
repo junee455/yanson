@@ -1,3 +1,11 @@
+* {
+    padding: 5px;
+    margin: 5px;
+}
+
+input {
+    width: 130%;
+}
 
 .next-button {
     border-color: #74d146;
@@ -9,7 +17,7 @@
 }
 
 .back-button {
-    
+
     border-color: #396ed1;
     color: #396ed1;
     &:hover {
@@ -65,7 +73,7 @@
     animation-delay: 0.33s;
     animation-iteration-count: infinite;
 
-    
+
     &:after {
 	position: absolute;
 	content: ".";
@@ -138,5 +146,5 @@
 	border: 3px solid;
 	transform: rotate(-45deg);
     }
-    
+
 }

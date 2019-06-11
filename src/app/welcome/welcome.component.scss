@@ -1,31 +1,19 @@
-.img-filter {
-    filter: invert(30%);
+* {
+    padding: 5px;
+    margin: 5px;
 }
-
-// @keyframes glow-rainbow-frames {
-//     0%   {text-shadow: 0 0 50px #d95758}; 
-//     12%  {text-shadow: 0 0 50px #d9b557}; 
-//     25%  {text-shadow: 0 0 50px #97d957}; 
-//     37%  {text-shadow: 0 0 50px #57d976}; 
-//     50%  {text-shadow: 0 0 50px #57d9d8}; 
-//     62%  {text-shadow: 0 0 50px #576ad9}; 
-//     75%  {text-shadow: 0 0 50px #9657d9}; 
-//     87%  {text-shadow: 0 0 50px #d957bf}; 
-//     100% {text-shadow: 0 0 50px #d95758}; 
-// }
 
 @keyframes glow-rainbow-frames {
-    0%   {text-shadow: 0 0 20px #ff0002;}; 
-    12%	 {text-shadow: 0 0 20px #ffb800;}; 
-    25%	 {text-shadow: 0 0 20px #7eff00;}; 
-    37%	 {text-shadow: 0 0 20px #00ffa1;}; 
-    50%	 {text-shadow: 0 0 20px #00d1ff;}; 
-    62%	 {text-shadow: 0 0 20px #0025ff;}; 
-    75%	 {text-shadow: 0 0 20px #7c00ff;}; 
-    87%	 {text-shadow: 0 0 20px #ff00cc;}; 
-    100% {text-shadow: 0 0 20px #ff0002;}; 
+    0%   {text-shadow: 0 0 20px #ff0002;};
+    12%  {text-shadow: 0 0 20px #ffb800;};
+    25%  {text-shadow: 0 0 20px #7eff00;};
+    37%  {text-shadow: 0 0 20px #00ffa1;};
+    50%  {text-shadow: 0 0 20px #00d1ff;};
+    62%  {text-shadow: 0 0 20px #0025ff;};
+    75%  {text-shadow: 0 0 20px #7c00ff;};
+    87%  {text-shadow: 0 0 20px #ff00cc;};
+    100% {text-shadow: 0 0 20px #ff0002;};
 }
-
 
 .glow-rainbow {
     animation-name: glow-rainbow-frames;
@@ -102,7 +90,6 @@
     background-image: url("../../assets/placeholder_video.svg");
 }
 
-
 .placeholder-music {
     border: 3px solid;
     border-radius: 50%;
@@ -153,6 +140,7 @@
     box-shadow: -2px 2px 6px 0 grey;
     overflow: hidden;
     padding: 0;
+    // background-color: white;
     border: none;
 }
 
@@ -213,19 +201,15 @@
     border-radius: 50%;
 }
 
-// #b1d109
-// #09d1c4
-// #d10978
-
 @keyframes theme {
-    10%  {background-color: white;  color: grey; };  
+    10% {background-color: white;  color: grey; };
     13% {background-color: #b1d109; color: white; };
     35% {background-color: #b1d109; color: white; };
-    38%	{background-color: #09d1c4; color: white; };
-    60%	{background-color: #09d1c4; color: white; };
-    63%	{background-color: #d10978; color: white;};
-    85%	{background-color: #d10978; color: white;};
-    88% {background-color: white;   color: grey; };  
+    38% {background-color: #09d1c4; color: white; };
+    60% {background-color: #09d1c4; color: white; };
+    63% {background-color: #d10978; color: white;};
+    85% {background-color: #d10978; color: white;};
+    88% {background-color: white;   color: grey; };
 }
 
 .theme-demo {
@@ -234,16 +218,16 @@
     animation-timing-function: linear;
     animation-iteration-count: infinite;
     * {
-    	animation-name: theme;
-    	animation-duration: 10s;
-    	animation-timing-function: linear;
-    	animation-iteration-count: infinite;
+	animation-name: theme;
+	animation-duration: 10s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
     }
 }
 
 @keyframes theme-pick {
-    0% {background-image: url("../../assets/raccoon.svg");};  
-    10% {background-image: url("../../assets/raccoon.svg");};  
+    0% {background-image: url("../../assets/raccoon.svg");};
+    10% {background-image: url("../../assets/raccoon.svg");};
     13% {background-image: url("../../assets/placeholder_man.svg");};
     35% {background-image: url("../../assets/placeholder_man.svg");};
     38%	{background-image: url("../../assets/placeholder_woman.svg");};

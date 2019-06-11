@@ -4,10 +4,7 @@ import { NgModule } from '@angular/core';
 // import { HttpRequest, HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { HeroesComponent } from './heroes/heroes.component';
-
 import { FormsModule } from '@angular/forms';
-import { HeroDetailComponent } from './hero-detail/hero-detail.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { AppRoutingModule } from './/app-routing.module';
@@ -22,12 +19,14 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
 import { ConvsComponent } from './messenger/convs/convs.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PasswordRestoreComponent } from './password-restore/password-restore.component';
+import { MenuComponent } from './menu/menu.component';
+import { HeaderComponent } from './header/header.component';
+// import * as $ from 'jquery';
+
 
 @NgModule({
     declarations: [
         AppComponent,
-        HeroesComponent,
-        HeroDetailComponent,
         SignInComponent,
         WelcomeComponent,
         SignUpComponent,
@@ -39,7 +38,10 @@ import { PasswordRestoreComponent } from './password-restore/password-restore.co
         MessengerComponent,
         ToolbarComponent,
         ConvsComponent,
-        PasswordRestoreComponent
+        PasswordRestoreComponent,
+        MenuComponent,
+        HeaderComponent
+        // $
     ],
     imports: [
         BrowserModule,

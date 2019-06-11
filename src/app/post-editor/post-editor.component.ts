@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { PostStructure, PostChunk, SelectionData } from './post';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Decorations } from './post';
+import { Button } from '../header/button';
+import * as $ from 'jquery';
 
 @Component({
     selector: 'app-post-editor',
@@ -7,164 +9,226 @@ import { PostStructure, PostChunk, SelectionData } from './post';
     styleUrls: ['./post-editor.component.scss']
 })
 
+/*
+  
+  angular component lifecycle
+  
+  OnChanges
+  OnInit
+  Docheck
+  AfterContentInit
+  AfterContentChecked
+  AfterViewInit
+  AfterViewChecked
+  |
+  +<--------------------+
+  |                     |
+  DoCheck               |
+  AfterContentChecked   |
+  AfterViewChecked  ----+
+  |
+  onDestroy
+  
+  post process lifecycle
+  - handle selection
+  
+*/
+
 export class PostEditorComponent implements OnInit {
-    debugData: Object = new Object
-    debugInfo() { }
 
-    currentDecorations: string[] = []
+    buttons: Button[];
 
-    text = new PostStructure
+    buttonBold = "";
+    buttonItalic = "";
+    buttonUnderline = "";
+    buttonStrike = "";
 
-    newChunk = false
-    decorationApplied = false
-    init = false;
+    activeModyfier: Decorations[] = [];
 
-    public focusBack() { // returns bursor back to position after blur
-        let el = document.getElementById("edit-area");
-        let startNode, endNode;
-        let start, end;
+    insertPic(e: MouseEvent) {
 
-        startNode = this.text.selection.startNode;
-        endNode = this.text.selection.endNode;
-        end = this.text.selection.end;
-        start = this.text.selection.start;
-
-        if (startNode == this.text.data.length) {
-            startNode--;
-            endNode = startNode;
-            console.log("!!last node!!", this.text.data.length);
-            end = start = this.text.data[startNode].text.length;
-        }
-
-        this.text.selection.selectionObj.setBaseAndExtent(el.childNodes.item(startNode + 1).childNodes[0],
-            start,
-            el.childNodes.item(endNode + 1).childNodes[0],
-            end);
-
-        el.focus();
     }
 
-    public handleSelection(event: KeyboardEvent) {
-        // if (event)
-        // if (event.key == "Enter") { // separate line-break handling
-        // console.log("Enter");
-        // document.getElementById("edit-area").removeChild(document.getElementById("edit-area").lastChild);
-        // return;
-        // }
-        this.text.selection.handleSelection();
-        if (event.key) {
-            if (this.newChunk) {
-                if (event.key.length == 1) {
-                    // this
-                    // this.text.data[this.text.selection.endNode].text
-                    let old = this.text.data[this.text.selection.startNode].text;
-                    old = old.substring(0, old.length - 1);
-                    console.log(document.activeElement.nodeName);
-                    this.text.selection.startNode++;
-                    this.text.selection.endNode++;
-                    this.text.selection.start = this.text.selection.end = 1;
-                    this.text.data[this.text.selection.startNode].text = event.key;
+    indent(e: MouseEvent) {
+        e.preventDefault();
+        document.execCommand("indent", false);
+    }
 
-                } else {
-                    // this.text.data[this.text.selection.startNode].text = "";
-                    // this.text.selection.startNode++;
-                    // this.text.selection.endNode++;
-                    // this.text.selection.start = this.text.selection.end = 0;
+    outdent(e: MouseEvent) {
+        e.preventDefault();
+        document.execCommand("outdent", false);
+    }
+
+    justifyRight(e: MouseEvent) {
+        e.preventDefault();
+        document.execCommand("justifyRight", false);
+    }
+
+    justifyCenter(e: MouseEvent) {
+        e.preventDefault();
+        document.execCommand("justifyCenter", false);
+    }
+
+    justifyLeft(e: MouseEvent) {
+        e.preventDefault();
+        document.execCommand("justifyLeft", false);
+    }
+
+    insertOl(e: MouseEvent) {
+        e.preventDefault();
+        document.execCommand("insertOrderedList", false);
+    }
+
+
+    insertUl(e: MouseEvent) {
+        e.preventDefault();
+        document.execCommand("insertUnorderedList", false);
+    }
+
+    toggleBold(e: MouseEvent) {
+        e.preventDefault();
+        document.execCommand("bold", false);
+        this.checkDecorations();
+    }
+
+    toggleItalic(e: MouseEvent) {
+        e.preventDefault();
+        document.execCommand("italic", false);
+        this.checkDecorations();
+    }
+
+    toggleUnderline(e: MouseEvent) {
+        e.preventDefault();
+        document.execCommand("underline", false);
+        this.checkDecorations();
+    }
+
+    toggleStrike(e: MouseEvent) {
+        e.preventDefault();
+        document.execCommand("strikeThrough", false);
+        this.checkDecorations();
+    }
+
+
+    checkDecorations() {
+        this.buttonBold =
+            this.buttonItalic =
+            this.buttonStrike =
+            this.buttonUnderline = "tool-bar-button";
+        if (document.queryCommandValue("Bold") === "true") {
+            this.buttonBold = "tool-bar-button pressed";
+        }
+        if (document.queryCommandValue("Underline") === "true") {
+            this.buttonUnderline = "tool-bar-button pressed";
+        }
+        if (document.queryCommandValue("Italic") === "true") {
+            this.buttonItalic = "tool-bar-button pressed";
+        }
+        if (document.queryCommandValue("StrikeThrough") === "true") {
+            this.buttonStrike = "tool-bar-button pressed";
+        }
+    }
+
+    keyPress(event: Event) {
+        if ((<KeyboardEvent>event).getModifierState("Control")) {
+            let executed = true;
+            if ("kjerlbui".split('').includes((<KeyboardEvent>event).key)) {
+                event.preventDefault();
+                switch ((<KeyboardEvent>event).key) {
+                    case "k": {
+                        document.execCommand("strikeThrough", false);
+                        break;
+                    }
+                    case "j": {
+                        document.execCommand("justifyFull", false);
+                        break;
+                    }
+                    case "e": {
+                        document.execCommand("justifyCenter", false);
+                        break;
+                    }
+                    case "r": {
+                        document.execCommand("justifyRight", false);
+                        break;
+                    }
+                    case "l": {
+                        document.execCommand("justifyLeft", false);
+                        break;
+                    }
+                    case "b": {
+                        document.execCommand("bold", false);
+                        break;
+                    }
+                    case "u": {
+                        document.execCommand("underline", false);
+                        break;
+                    }
+                    case "i": {
+                        document.execCommand("italic", false);
+                        break;
+                    }
                 }
-            } else {
-                this.text.syncWithHTML();
-                this.text.checkConsistance();
             }
+        } else if ((<KeyboardEvent>event).key == "Tab") {
+            event.preventDefault();
+            if (document.getSelection().toString().length)
+                if ((<KeyboardEvent>event).shiftKey)
+                    document.execCommand("outdent", false);
+                else
+                    document.execCommand("indent", false);
+            else
+                document.execCommand("insertText", false, "\t");
         }
-        this.newChunk = false;
-    }
-
-    public toggleBold() {
-        if (this.text.selection.selection == "") { // start typing in new chunk
-            this.newChunk = true;
-        }
-        this.text.toggleBold();
-    }
-
-    public toggleItalic() {
-        if (this.text.selection.selection == "") { // start typing in new chunk
-            this.newChunk = true;
-        } else
-            this.text.toggleItalic();
-    }
-
-    public toggleUnderlined() {
-        if (this.text.selection.selection == "") { // start typing in new chunk
-            this.newChunk = true;
-        } else
-            this.text.toggleUnderlined();
-    }
-
-    public toggleCrossed() {
-        if (this.text.selection.selection == "") { // start typing in new chunk
-            this.newChunk = true;
-        } else
-            this.text.toggleCrossed();
-    }
-
-    public savePost() {
-        console.log("savePost");
-        console.log("mockFutction");
-    }
-
-    constructor() {
-        // mock constructor
-        this.text.data[0] = new PostChunk("plain text lorem ipsum dolar sit amet ");
-        this.text.data[1] = new PostChunk("bold text ", ["bold"]);
-        this.text.data[2] = new PostChunk("bold text ", ["bold"]);
-        this.text.data[3] = new PostChunk("bold and underlined", ["bold", "underlined"]);
-        this.text.data[4] = new PostChunk("plain text");
-        this.text.checkConsistance()
-        this.runTest()
-
-    }
-
-    // public setFocus(chunk: number = -1) {
-    //     if (chunk == -1) chunk = this.text.data.length - 1;
-    //     // let el = <HTMLElement>(document.getElementById("edit-area").children[chunk]);
-    //     // el.focus();
-    //     document.getElementById("edit-area").focus();
-    //     // let el = document.getElementById("edit-area");
-    //     // setTimeout(function() {
-    //     //     el.focus();
-    //     // }, 0);
-    // }
-
-
-    runTest() {
+        this.checkDecorations();
     }
 
     ngOnInit() {
+        this.buttons = [new Button("YAnSoN", "/"),
+        new Button("me", "/user"),
+        new Button("new post", null),
+        new Button("messages", "/messenger"),
+        new Button("settings", null)];
     }
 
     ngDoCheck() {
-        // if (!this.newChunk)
-        // this.text.checkConsistance();
-        // console.log("consistance checked");
-        this.currentDecorations = this.text.getCommonDecorations();
-
     }
 
     ngAfterContentChecked() {
     }
 
+
     ngAfterViewChecked() {
-        // this.currentDecorations = this.text.getCommonDecorations();
-        console.log("focused back");
-        this.focusBack();
-        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        // this.decorationApplied = false;
+        $("#edit-area").focus();
     }
 
-    ngOnChanges() {
-        // console.log(document.getSelection().focusNode.textContent);
-        this.text.syncWithHTML();
-        this.text.selection.handleSelection();
+
+    ngAfterViewInit() {
+
+        // insert as plain text
+        // @ts-ignore
+        $("#edit-area").on("paste", function(e: ClipboardEvent) {
+
+            // get text representation of clipboard
+
+            // since 'originalEvent' isn't defined in lib.dom.d.ts
+            // @ts-ignore
+            let text = (e.originalEvent || e).clipboardData.getData('text/plain');
+
+            if (text !== "") e.preventDefault();
+
+            // insert text manually
+            document.execCommand("insertHTML", false, text);
+        });
+        $("#edit-area").focus();
+        document.execCommand("justifyLeft");
+    }
+
+    constructor() {
+        this.buttonBold =
+            this.buttonItalic =
+            this.buttonUnderline =
+            this.buttonStrike = "tool-bar-button";
+
     }
 };
 

@@ -1,7 +1,31 @@
-<p>
-    user page
-</p>
-<p>get user response: {{userData}}</p>
-<div class="mock-button"
-     (click)="logout()">Logout</div>
-<div class="sandwich"></div>
+<!-- wall content -->
+
+<!-- <menu></menu> -->
+
+<app-header [buttons]="buttons"
+	    [rightButtons]="buttons">
+    <div style="margin: 5px;
+		margin-bottom: 0;"
+		[ngClass]="pageStyle.buttonStyle"
+	 (click)="togglePageStyle()"></div>
+</app-header>
+<!-- <div class="header flex-right">
+     <div [ngClass]="pageStyle.buttonStyle"
+     (click)="togglePageStyle()"></div>
+     </div> -->
+
+<div [ngClass]="pageStyle.wallStyle">
+    <div *ngFor='let post of posts'
+	 [ngClass]="pageStyle.postStyle">{{ post.data }}</div>
+</div>
+
+<!-- wall content/ -->
+
+
+<!-- menu -->
+
+<!-- <menu></menu> -->
+
+<!-- menu/ -->
+
+

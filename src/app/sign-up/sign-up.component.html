@@ -1,12 +1,10 @@
 <br/>
-<br/>
-<br/>
 <div class="text-c font-x3 bold">Welcome mate!</div>
 <div class="default-block margin-c fit-content"
      style="padding: 0px;
-	    position: absolute;
-	    left: 20%;
-	    right: 20%;
+	    width: 70%;
+	    margin-left: auto;
+	    margin-right: auto;
 	    margin: auto;">
     <div class="flex-left"
 	 id="carousel"
@@ -54,12 +52,12 @@
 		<tr>
 		    <td>Email</td>
 		    <td><input spellcheck="false"
-			       [(ngModel)]="userData.email"
-			       (keyup)="input = true"
-			       name=""
-			       placeholder="email@domain.com"
-			       type="email"
-			       value=""/></td>
+			    [(ngModel)]="userData.email"
+			    (keyup)="input = true"
+			    name=""
+			    placeholder="email@domain.com"
+			    type="email"
+			    value=""/></td>
 		    <td style="color: red">{{emailCheck}}</td>
 		</tr>
 		<tr>
@@ -80,7 +78,7 @@
 			       [(ngModel)]="userData.password"
 			       type="password"
 			       value=""/></td>
-		    <td style="font-size: 60%; width: 10%;"
+		    <td style="font-size: 60%; width: 20%;"
 			[class]="vulLevel">{{passStrength}}</td>
 		</tr>
 		<tr>
@@ -91,7 +89,7 @@
 			       (keyup)="input = true"
 			       [(ngModel)]="passCheck"
 			       type="password"/></td>
-		    <td style="font-size: 60%; width: 10%;"
+		    <td style="font-size: 60%; width: 20%;"
 			id="pass-check"></td>
 		</tr>
 	    </table>

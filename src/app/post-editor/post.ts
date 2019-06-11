@@ -3,12 +3,6 @@
 // sory for spoiler
 // this code is a puddle of shit
 
-// allowed text decorators
-// italic
-// bold
-// underlined
-// crossed
-
 // checks if two arrays consist same
 // elements regardles their order
 
@@ -38,7 +32,7 @@
 */
 
 
-function areEqual<T>(one: T[], two: T[]): boolean {
+export function areEqual<T>(one: T[], two: T[]): boolean {
     if (one.length != two.length) return false;
 
     for (let val of one) {
@@ -52,13 +46,14 @@ function areEqual<T>(one: T[], two: T[]): boolean {
     return true;
 }
 
-function removeValue<T>(arr: T[], val: T) {
+
+export function removeValue<T>(arr: T[], val: T) { // removes all elements by value
     arr.forEach((item, index) => {
         if (item == val) arr.splice(index, 1);
     })
 }
 
-function toggleValue<T>(arr: T[], val: T) {
+export function toggleValue<T>(arr: T[], val: T) { // toggles value of thea rray
     if (arr.includes(val)) {
         removeValue(arr, val);
     } else {
@@ -66,23 +61,124 @@ function toggleValue<T>(arr: T[], val: T) {
     }
 }
 
+export function intersection<T>(...arrs: Array<T[]>): T[] { // returns the intersection of sets
+    if (arrs.length == 0) return [];
+    if (arrs.length == 1) return arrs[0];
+
+    let minEl = arrs[0].slice();
+
+    for (let el of arrs) {
+        if (el.length < minEl.length) minEl = el.slice();
+    }
+
+    for (let _el of arrs) {
+        for (let __el of minEl)
+            if (!_el.includes(__el)) removeValue(minEl, __el);
+    }
+
+    return minEl;
+}
+
+
 // structure of the chunks the post
 // consists of
+export enum Decorations {
+    Bold = "bold",
+    Italic = "italic",
+    Underline = "underline",
+    Strike = "strike",
+    Break = "break"
+}
+
 export class PostChunk {
     text: string = "";
-    decoration: string[] = [];
+    decoration: Decorations[] = [];
+
+    isBreak() {
+        if (this.decoration.includes(Decorations.Break))
+            return true;
+        return false;
+    }
+
     getCSS() {
         if (this.decoration)
             return this.decoration.reduce((acc, val) => acc + val + " ", "");
         else
             return ""
     }
-    constructor(txt: string = "", dec: string[] = []) {
+    constructor(txt: string = "", dec: Decorations[] = []) {
         this.text = txt;
         this.decoration = dec;
     }
 };
 
+export class Post {
+    data: PostChunk[] = [];
+    private getCommonDecorations() {
+        if (this.data.length == 0) return [];
+        let minDec = this.data[0].decoration.length;
+        let chunkInd = 0;
+        let ind = 0;
+        for (let chunk of this.data) {
+            if (chunk.decoration.length < minDec) {
+                minDec = chunk.decoration.length;
+                chunkInd = ind;
+            }
+            ind++;
+        }
+        if (ind == 0) return [];
+
+    }
+
+
+    insertData(data, index: number, chunkIndex?: number): void {
+        if (this.data == []) this.data = [new PostChunk()];
+        if (typeof chunkIndex == 'undefined') {
+            chunkIndex = 0;
+            for (let chunk of this.data) {
+                if (index > chunk.text.length) {
+                    chunkIndex++;
+                    index -= chunk.text.length;
+                }
+            }
+        }
+
+        if (typeof data == "string") {
+            // insert text directly to the chunk
+            this.data[chunkIndex].text = this.data[chunkIndex].text.substring(0, index) + data + this.data[chunkIndex].text.substring(index);
+        } else if (typeof data == "object") {
+            // insert new chunk in existing one
+            this.data.splice(chunkIndex, 0, new PostChunk);
+            this.data[chunkIndex].text = this.data[chunkIndex + 1].text.substring(0, index);
+            this.data[chunkIndex + 1].text = this.data[chunkIndex + 1].text.substring(index);
+            this.data[chunkIndex].decoration = this.data[chunkIndex + 1].decoration.slice();
+            this.data.splice(chunkIndex + 1, 0, data);
+
+        }
+
+        // this.data[chunkIndex].text.
+    }
+
+    insertChunk(text: string, decorations: Decorations[], index: number) {
+
+    }
+
+    checkConsistency() { // removes empty chunks
+        let tmp = this.data[0];
+        for (let chunk of this.data.slice(1)) {
+            if (tmp.text == "") {
+                removeValue(this.data, tmp);
+                continue;
+            }
+            if (areEqual(chunk.decoration, tmp.decoration)) {
+                tmp.text = tmp.text + chunk.text;
+                this.data.splice(this.data.indexOf(chunk), 1);
+            } else {
+                tmp = chunk;
+            }
+        }
+    }
+};
 
 export class SelectionData {
     selectionObj: Selection = window.getSelection()
@@ -107,26 +203,26 @@ export class SelectionData {
         console.log("activeElement", document.activeElement.id);
         console.log("last child", document.activeElement.lastChild.nodeName);
 
-        // enter was pressed
-        // need to add the linebreak
-        if (document.activeElement.lastChild.nodeName == "DIV") {
-            console.log("DIV ~~~~");
+        // // enter was pressed
+        // // need to add the linebreak
+        // if (document.activeElement.lastChild.nodeName == "DIV") {
+        //     console.log("DIV ~~~~");
 
-            // document.activeElement.removeChild(document.activeElement.lastChild);
-            let doc = document.getElementById("edit-area");
-            let el = document.getElementById("edit-area").lastChild;
-            for (let node of el.childNodes) {
-                console.log(node.childNodes[0].textContent);
-                let newNode: Node;
-                newNode = node.cloneNode();
-                newNode.textContent = node.childNodes[0].textContent;
-                // newNode.textContent = node;
-                doc.insertBefore(newNode, el);
-            }
-            console.log("DIV ~~~~");
-            doc.removeChild(el);
-            // return;
-        }
+        //     // document.activeElement.removeChild(document.activeElement.lastChild);
+        //     let doc = document.getElementById("edit-area");
+        //     let el = document.getElementById("edit-area").lastChild;
+        //     for (let node of Array.prototype.slice.call(el.childNodes)) {
+        //         console.log(node.childNodes[0].textContent);
+        //         let newNode: Node;
+        //         newNode = node.cloneNode();
+        //         newNode.textContent = node.childNodes[0].textContent;
+        //         // newNode.textContent = node;
+        //         doc.insertBefore(newNode, el);
+        //     }
+        //     console.log("DIV ~~~~");
+        //     doc.removeChild(el);
+        //     // return;
+        // }
 
         this.startNode = -1;
         this.endNode = -1;
@@ -166,6 +262,12 @@ export class SelectionData {
         console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         // this.absoluteOffset[0] = 0;
         // this.absoluteOffset[1] = 0;
+        return {
+            start: this.start,
+            end: this.end,
+            startNode: this.startNode,
+            endNode: this.endNode
+        };
     }
 
     debugInfo() {
@@ -177,293 +279,293 @@ export class SelectionData {
 
 }
 
-export class PostStructure {
-    data: PostChunk[] = []
-    selection: SelectionData = new SelectionData
+// export class PostStructure {
+//     data: PostChunk[] = []
+//     selection: SelectionData = new SelectionData
 
-    // merges neighbour elements with same decorators
-    public checkConsistance() {
-        console.log("checkConsistance")
-        let data = this.data
-        let absolutePos = 0;
-        let offset = 0;
+//     // merges neighbour elements with same decorators
+//     public checkConsistancy() {
+//     console.log("checkConsistance")
+//     let data = this.data
+//     let absolutePos = 0;
+//     let offset = 0;
 
-        let startNode = 0,
-            endNode = 0,
-            start = 0,
-            end = 0;
+//     let startNode = 0,
+//         endNode = 0,
+//         start = 0,
+//         end = 0;
 
-        console.log("data length", data.length);
+//     console.log("data length", data.length);
 
-        if (this.selection.startNode > this.selection.endNode) {
-            startNode = this.selection.endNode;
-            endNode = this.selection.startNode;
-            start = this.selection.end;
-            end = this.selection.start;
-        } else {
-            startNode = this.selection.startNode;
-            endNode = this.selection.endNode;
-            start = this.selection.start;
-            end = this.selection.end;
-        }
+//     if (this.selection.startNode > this.selection.endNode) {
+//         startNode = this.selection.endNode;
+//         endNode = this.selection.startNode;
+//         start = this.selection.end;
+//         end = this.selection.start;
+//     } else {
+//         startNode = this.selection.startNode;
+//         endNode = this.selection.endNode;
+//         start = this.selection.start;
+//         end = this.selection.end;
+//     }
 
-        for (let cnt = 0; cnt < startNode; cnt++) {
-            absolutePos += this.data[cnt].text.length;
-        }
-        absolutePos += start;
+//     for (let cnt = 0; cnt < startNode; cnt++) {
+//         absolutePos += this.data[cnt].text.length;
+//     }
+//     absolutePos += start;
 
-        offset = this.selection.selectionObj.toString().length;
+//     offset = this.selection.selectionObj.toString().length;
 
-        console.log("Absolute pos", absolutePos);
-        console.log("Offset", offset);
-
-
-        for (let cnt = 0; cnt < data.length - 1; cnt++) {
-            console.log("data text", data[cnt].text);
-
-            if (data[cnt].text == "") {
-                data.splice(cnt, 1);
-            }
-
-            if (areEqual(data[cnt].decoration, data[cnt + 1].decoration)) {
-                data[cnt].text += data[cnt + 1].text;
-                data.splice(cnt + 1, 1);
-                cnt--;
-            }
-        }
-
-        this.selection.start = 0;
-        this.selection.end = 0;
-        this.selection.startNode = 0;
-        this.selection.endNode = 0;
+//     console.log("Absolute pos", absolutePos);
+//     console.log("Offset", offset);
 
 
-        for (let chunk of this.data) {
-            if (chunk.text.length < absolutePos) {
-                this.selection.startNode++;
-                absolutePos -= chunk.text.length;
-            } else {
-                this.selection.start = absolutePos;
-                offset += absolutePos;
-                this.selection.endNode = this.selection.startNode;
-                break;
-            }
-        }
+//     for (let cnt = 0; cnt < data.length - 1; cnt++) {
+//         console.log("data text", data[cnt].text);
 
-        for (let cnt = this.selection.startNode; cnt < this.data.length; cnt++) {
-            let chunk = this.data[cnt].text.length
-            if (chunk < offset) {
-                this.selection.endNode++;
-                offset -= chunk;
-            } else {
-                this.selection.end = offset;
-                break;
-            }
-        }
+//         if (data[cnt].text == "") {
+//             data.splice(cnt, 1);
+//         }
 
-        console.log("StartNode", this.selection.startNode);
-        console.log("EndNode", this.selection.endNode);
-        console.log("Start", this.selection.start);
-        console.log("End", this.selection.end);
+//         if (areEqual(data[cnt].decoration, data[cnt + 1].decoration)) {
+//             data[cnt].text += data[cnt + 1].text;
+//             data.splice(cnt + 1, 1);
+//             cnt--;
+//         }
+//     }
 
-        // if (this.selection.startNode == this.data.length) {
-        //     this.selection.startNode--;
-        //     this.selection.endNode = this.selection.startNode;
-        //     this.selection.end = this.data[this.selection.startNode].text.length - 1;
-        // }
-
-        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~");
-    }
-
-    // get common decorations of selected chunks
-    public getCommonDecorations() {
-        let decoration = []
-
-        let rev = false;
-
-        if (this.selection.startNode == this.selection.endNode)
-            return this.data[this.selection.startNode].decoration
-
-        if (this.selection.startNode > this.selection.endNode) {
-            rev = true;
-            [this.selection.endNode, this.selection.startNode] = [this.selection.startNode, this.selection.endNode];
-        }
-
-        for (let dec of this.data[this.selection.startNode].decoration) {
-            let common = true
-            for (let cnt = this.selection.startNode + 1; cnt <= this.selection.endNode; cnt++) {
-                if (!this.data[cnt].decoration.includes(dec)) {
-                    common = false
-                    break
-                }
-            }
-            if (common)
-                decoration.push(dec)
-        }
-
-        if (rev) {
-            [this.selection.endNode, this.selection.startNode] = [this.selection.startNode, this.selection.endNode];
-        }
+//     this.selection.start = 0;
+//     this.selection.end = 0;
+//     this.selection.startNode = 0;
+//     this.selection.endNode = 0;
 
 
-        return decoration
+//     for (let chunk of this.data) {
+//         if (chunk.text.length < absolutePos) {
+//             this.selection.startNode++;
+//             absolutePos -= chunk.text.length;
+//         } else {
+//             this.selection.start = absolutePos;
+//             offset += absolutePos;
+//             this.selection.endNode = this.selection.startNode;
+//             break;
+//         }
+//     }
 
-    }
+//     for (let cnt = this.selection.startNode; cnt < this.data.length; cnt++) {
+//         let chunk = this.data[cnt].text.length
+//         if (chunk < offset) {
+//             this.selection.endNode++;
+//             offset -= chunk;
+//         } else {
+//             this.selection.end = offset;
+//             break;
+//         }
+//     }
 
-    // inserts currently selected chunk
-    // on current position with given decorations
-    insertChunk(decorations: string[]) {
-        let chunk = new PostChunk
-        chunk.decoration = decorations
-        chunk.text = this.selection.selection
-        // check if selected text
-        // contained by single node
-        // if text was selected in reverse direction
-        if (this.selection.endNode == this.selection.startNode) {
-            let rev = false;
-            if (this.selection.end < this.selection.start) {
-                [this.selection.end, this.selection.start] = [this.selection.start, this.selection.end];
-                rev = true;
-            }
+//     console.log("StartNode", this.selection.startNode);
+//     console.log("EndNode", this.selection.endNode);
+//     console.log("Start", this.selection.start);
+//     console.log("End", this.selection.end);
 
-            let oldLeft, oldRight, oldDec;
+//     // if (this.selection.startNode == this.data.length) {
+//     //     this.selection.startNode--;
+//     //     this.selection.endNode = this.selection.startNode;
+//     //     this.selection.end = this.data[this.selection.startNode].text.length - 1;
+//     // }
 
-            // extracting old parts of current chunk and saving their decorations
-            oldLeft = this.data[this.selection.endNode].text.substring(0, this.selection.start);
-            oldRight = this.data[this.selection.endNode].text.substring(this.selection.end);
-            oldDec = this.data[this.selection.endNode].decoration
+//     console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~");
+// }
 
-            if (oldLeft != "") {
-                this.data.splice(this.selection.startNode, 0, new PostChunk(oldLeft, oldDec));
-                this.selection.start = 0;
-                this.selection.startNode++;
-                this.selection.endNode++;
-            }
+// //     // get common decorations of selected chunks
+// //     public getCommonDecorations() {
+// //         let decoration = []
 
-            if (oldRight != "") {
-                this.data.splice(this.selection.startNode + 1, 0, new PostChunk(oldRight, oldDec));
-                this.selection.end = chunk.text.length;
-            }
+// //         let rev = false;
 
-            this.data.splice(this.selection.startNode, 1, chunk)
-            if (rev) {
-                [this.selection.end, this.selection.start] = [this.selection.start, this.selection.end];
-            }
+// //         if (this.selection.startNode == this.selection.endNode)
+// //             return this.data[this.selection.startNode].decoration
 
-        }
-        else {
-            if (this.selection.startNode > this.selection.endNode) {
-                [this.selection.startNode, this.selection.endNode] = [this.selection.endNode, this.selection.startNode]
-                [this.selection.start, this.selection.end] = [this.selection.end, this.selection.start]
-            }
-            let oldLeft, oldRight, oldDecLeft, oldDecRight;
-            oldLeft = this.data[this.selection.startNode].text.substring(0, this.selection.start);
-            oldRight = this.data[this.selection.endNode].text.substring(this.selection.end);
-            oldDecLeft = this.data[this.selection.startNode].decoration;
-            oldDecRight = this.data[this.selection.endNode].decoration;
+// //         if (this.selection.startNode > this.selection.endNode) {
+// //             rev = true;
+// //             [this.selection.endNode, this.selection.startNode] = [this.selection.startNode, this.selection.endNode];
+// //         }
 
-            if (oldLeft != "") {
-                this.data.splice(this.selection.startNode, 1, new PostChunk(oldLeft, oldDecLeft));
-                this.selection.startNode++;
-                this.selection.start = 0;
-            }
+// //         for (let dec of this.data[this.selection.startNode].decoration) {
+// //             let common = true
+// //             for (let cnt = this.selection.startNode + 1; cnt <= this.selection.endNode; cnt++) {
+// //                 if (!this.data[cnt].decoration.includes(dec)) {
+// //                     common = false
+// //                     break
+// //                 }
+// //             }
+// //             if (common)
+// //                 decoration.push(dec)
+// //         }
 
-            if (oldRight != "") {
-                this.data.splice(this.selection.endNode, 1, new PostChunk(oldRight, oldDecRight));
-                this.selection.endNode--;
-                this.selection.end = 0;
-            }
-
-            this.data.splice(this.selection.startNode, this.selection.endNode - this.selection.startNode + 1, chunk);
-        }
-    }
-
-    public toggleBold() {
-        let dec = this.getCommonDecorations().slice()
-        toggleValue(dec, "bold");
-        this.insertChunk(dec);
-        // this.checkConsistance();
-    }
-
-    public toggleItalic() {
-        let dec = this.getCommonDecorations().slice()
-        toggleValue(dec, "italic")
-        // html doesn't allow italic and underlined at the same time
-        removeValue(dec, "underlined");
-        this.insertChunk(dec);
-    }
-
-    public toggleUnderlined() {
-        let dec = this.getCommonDecorations().slice()
-        toggleValue(dec, "underlined");
-        removeValue(dec, "italic");
-        this.insertChunk(dec);
-    }
-
-    public toggleCrossed() {
-        let dec = this.getCommonDecorations().slice();
-        toggleValue(dec, "crossed")
-        this.insertChunk(dec);
-    }
-
-    public syncWithHTML() {
-        // this needed since ngModel doesn't work with contenteditable div
-        console.log("SyncWithHtml");
-        console.log("before", this.data[this.selection.endNode].text);
-        this.data[this.selection.endNode].text = document.getSelection().focusNode.textContent;
-        console.log("after", this.data[this.selection.endNode].text);
-        console.log("textContent", document.getSelection().focusNode.textContent);
-        console.log("activeElement", document.activeElement.id);
-        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-    }
-
-    debugInfo() {
-        let text = []
-        let keys = Object.keys(this.selection)
-
-        for (let prop in this.selection) {
-            if (typeof (this.selection[prop]) != "function")
-                text.push([prop, this.selection[prop]])
-        }
-
-        return text;
-
-    }
-
-    constructor() {
-        this.runTest();
-    }
-
-    runTest() {
-        console.log("Module Post");
-        console.log("areEqual");
-        console.log("4, 5, 6 : 4, 5, 6", areEqual([4, 5, 6], [4, 5, 6]));
-        console.log("1, 3, 2 : 2, 1, 3", areEqual([1, 3, 2], [2, 1, 3]));
-        console.log("1, 2, 3, 4 : 1, 2, 3", areEqual([1, 2, 3, 4], [1, 2, 3]));
-        console.log("Check consistence");
-        console.log(this.data.length)
-        this.checkConsistance();
-        console.log(this.data.length);
-        console.log("Remove value");
-        let arr = [1, 2, 5, 0];
-        console.log(arr);
-        removeValue(arr, 5);
-        console.log(arr);
-        toggleValue(arr, 5);
-        console.log(arr);
-        arr = [];
-        console.log(arr);
-        removeValue(arr, 5);
-        console.log(arr);
-        toggleValue(arr, 5);
-        console.log(arr);
-        let a, b;
-        a = 1;
-        b = 2;
-        console.log("Swap", a, b);
-        [a, b] = [b, a];
-        console.log(a, b);
-    };
+// //         if (rev) {
+// //             [this.selection.endNode, this.selection.startNode] = [this.selection.startNode, this.selection.endNode];
+// //         }
 
 
-};
+// //         return decoration
+
+// //     }
+
+// //     // inserts currently selected chunk
+// //     // on current position with given decorations
+// //     insertChunk(decorations: string[]) {
+// //         let chunk = new PostChunk
+// //         chunk.decoration = decorations
+// //         chunk.text = this.selection.selection
+// //         // check if selected text
+// //         // contained by single node
+// //         // if text was selected in reverse direction
+// //         if (this.selection.endNode == this.selection.startNode) {
+// //             let rev = false;
+// //             if (this.selection.end < this.selection.start) {
+// //                 [this.selection.end, this.selection.start] = [this.selection.start, this.selection.end];
+// //                 rev = true;
+// //             }
+
+// //             let oldLeft, oldRight, oldDec;
+
+// //             // extracting old parts of current chunk and saving their decorations
+// //             oldLeft = this.data[this.selection.endNode].text.substring(0, this.selection.start);
+// //             oldRight = this.data[this.selection.endNode].text.substring(this.selection.end);
+// //             oldDec = this.data[this.selection.endNode].decoration
+
+// //             if (oldLeft != "") {
+// //                 this.data.splice(this.selection.startNode, 0, new PostChunk(oldLeft, oldDec));
+// //                 this.selection.start = 0;
+// //                 this.selection.startNode++;
+// //                 this.selection.endNode++;
+// //             }
+
+// //             if (oldRight != "") {
+// //                 this.data.splice(this.selection.startNode + 1, 0, new PostChunk(oldRight, oldDec));
+// //                 this.selection.end = chunk.text.length;
+// //             }
+
+// //             this.data.splice(this.selection.startNode, 1, chunk)
+// //             if (rev) {
+// //                 [this.selection.end, this.selection.start] = [this.selection.start, this.selection.end];
+// //             }
+
+// //         }
+// //         else {
+// //             if (this.selection.startNode > this.selection.endNode) {
+// //                 [this.selection.startNode, this.selection.endNode] = [this.selection.endNode, this.selection.startNode];
+// //                 [this.selection.start, this.selection.end] = [this.selection.end, this.selection.start];
+// //             }
+// //             let oldLeft, oldRight, oldDecLeft, oldDecRight;
+// //             oldLeft = this.data[this.selection.startNode].text.substring(0, this.selection.start);
+// //             oldRight = this.data[this.selection.endNode].text.substring(this.selection.end);
+// //             oldDecLeft = this.data[this.selection.startNode].decoration;
+// //             oldDecRight = this.data[this.selection.endNode].decoration;
+
+// //             if (oldLeft != "") {
+// //                 this.data.splice(this.selection.startNode, 1, new PostChunk(oldLeft, oldDecLeft));
+// //                 this.selection.startNode++;
+// //                 this.selection.start = 0;
+// //             }
+
+// //             if (oldRight != "") {
+// //                 this.data.splice(this.selection.endNode, 1, new PostChunk(oldRight, oldDecRight));
+// //                 this.selection.endNode--;
+// //                 this.selection.end = 0;
+// //             }
+
+// //             this.data.splice(this.selection.startNode, this.selection.endNode - this.selection.startNode + 1, chunk);
+// //         }
+// //     }
+
+// //     public toggleBold() {
+// //         let dec = this.getCommonDecorations().slice()
+// //         toggleValue(dec, "bold");
+// //         this.insertChunk(dec);
+// //         // this.checkConsistance();
+// //     }
+
+// //     public toggleItalic() {
+// //         let dec = this.getCommonDecorations().slice()
+// //         toggleValue(dec, "italic")
+// //         // html doesn't allow italic and underlined at the same time
+// //         removeValue(dec, "underlined");
+// //         this.insertChunk(dec);
+// //     }
+
+// //     public toggleUnderlined() {
+// //         let dec = this.getCommonDecorations().slice()
+// //         toggleValue(dec, "underlined");
+// //         removeValue(dec, "italic");
+// //         this.insertChunk(dec);
+// //     }
+
+// //     public toggleCrossed() {
+// //         let dec = this.getCommonDecorations().slice();
+// //         toggleValue(dec, "crossed")
+// //         this.insertChunk(dec);
+// //     }
+
+// //     public syncWithHTML() {
+// //         // this needed since ngModel doesn't work with contenteditable div
+// //         console.log("SyncWithHtml");
+// //         console.log("before", this.data[this.selection.endNode].text);
+// //         this.data[this.selection.endNode].text = document.getSelection().focusNode.textContent;
+// //         console.log("after", this.data[this.selection.endNode].text);
+// //         console.log("textContent", document.getSelection().focusNode.textContent);
+// //         console.log("activeElement", document.activeElement.id);
+// //         console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+// //     }
+
+// //     debugInfo() {
+// //         let text = []
+// //         let keys = Object.keys(this.selection)
+
+// //         for (let prop in this.selection) {
+// //             if (typeof (this.selection[prop]) != "function")
+// //                 text.push([prop, this.selection[prop]])
+// //         }
+
+// //         return text;
+
+// //     }
+
+// //     constructor() {
+// //         this.runTest();
+// //     }
+
+// //     runTest() {
+// //         console.log("Module Post");
+// //         console.log("areEqual");
+// //         console.log("4, 5, 6 : 4, 5, 6", areEqual([4, 5, 6], [4, 5, 6]));
+// //         console.log("1, 3, 2 : 2, 1, 3", areEqual([1, 3, 2], [2, 1, 3]));
+// //         console.log("1, 2, 3, 4 : 1, 2, 3", areEqual([1, 2, 3, 4], [1, 2, 3]));
+// //         console.log("Check consistence");
+// //         console.log(this.data.length)
+// //         this.checkConsistance();
+// //         console.log(this.data.length);
+// //         console.log("Remove value");
+// //         let arr = [1, 2, 5, 0];
+// //         console.log(arr);
+// //         removeValue(arr, 5);
+// //         console.log(arr);
+// //         toggleValue(arr, 5);
+// //         console.log(arr);
+// //         arr = [];
+// //         console.log(arr);
+// //         removeValue(arr, 5);
+// //         console.log(arr);
+// //         toggleValue(arr, 5);
+// //         console.log(arr);
+// //         let a, b;
+// //         a = 1;
+// //         b = 2;
+// //         console.log("Swap", a, b);
+// //         [a, b] = [b, a];
+// //         console.log(a, b);
+// //     };
+
+
+// // };

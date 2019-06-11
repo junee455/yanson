@@ -9,8 +9,8 @@ import { UserComponent } from './user/user.component';
 // import { CommonModule } from '@angular/common';
 
 const routes: Routes = [
-    { path: '', redirectTo: 'welcome', pathMatch: 'full' },
-    { path: 'welcome', component: WelcomeComponent },
+    // { path: '', redirectTo: 'welcome', pathMatch: 'full' },
+    { path: '', component: WelcomeComponent },
     { path: 'sign-in', component: SignInComponent },
     { path: 'sign-up', component: SignUpComponent },
     { path: 'messenger', component: MessengerComponent },

@@ -1,48 +1,47 @@
-<div> text on the backgrouuuund...</div>
-<div style="position: fixed;
-	    top: 0;
-	    left: 0;
-	    padding: 0;
-	    margin: 0;
-	    border-radius: 0;
-	    width: 100%;
-	    height: 100%;
-	    background-color: black;
-	    opacity: 0.5;">
-    <div class="default-block fit-width margin-c"
-	 style="position: absolute;
-		top: 10%;
-		left: 10%;
-		padding: 20px;
-		padding-top: 0;
-		width: 80%;
-		height: 80%;">
-	<div class="flex-left">
-	    <div id="bold-button"
-		 title="bold"
-		 [class]="((currentDecorations.includes('bold')) ? 'button-activate ' : '') + 'mock-button'"
-		 (click)="toggleBold()">B</div>
-	    <div title="italic"
-		 [class]="((currentDecorations.includes('italic')) ? 'button-activate ' : '') + 'mock-button italic'"
-		 (click)="toggleItalic()">I</div>
-	    <div title="underlined"
-		 [class]="((currentDecorations.includes('underlined')) ? 'button-activate ' : '')  + 'mock-button underlined'"
-		 (click)="toggleUnderlined()">U</div>
-	    <div id="line-through-button"
-		 title="line through"
-		 [class]="((currentDecorations.includes('crossed')) ? 'button-activate ' : '')   + 'mock-button crossed'"
-		 (click)="toggleCrossed()">S</div>
-	</div>
-	<div id="edit-area"
-	     contenteditable="true"
-	     (keyup)="handleSelection($event)"
-	     (click)="handleSelection($event)">
-	    <span [class]="chunk.getCSS()"
-		  *ngFor="let chunk of text.data; let ind = index">{{chunk.text}}</span>
-	</div>
-	<div id="save-button"
-	     (click)="savePost()"
-	     class="mock-button">save</div>
-    </div>
+<app-header [buttons]="buttons"></app-header>
+<div class="flex-left">
+    <div (mousedown)="toggleBold($event)"
+	 [ngClass]="buttonBold"><b style="font-size: 110%;">B</b></div>
+    <div (mousedown)="toggleItalic($event)"
+    	 [ngClass]="buttonItalic"><i>I</i></div>
+    <div (mousedown)="toggleUnderline($event)"
+    	 [ngClass]="buttonUnderline"><u>U</u></div>
+    <div (mousedown)="toggleStrike($event)"
+    	 [ngClass]="buttonStrike"><s>S</s></div>
+    <!-- insert picture -->
+    <div class="img-icon tool-bar-button img-filter"
+	 (mousedown)="buttonInsertPic($event)"
+	 title="insert image"> </div>
+    <!-- lists -->
+    <div class="ol-icon tool-bar-button img-filter"
+	 (mousedown)="insertOl($event)"
+	 title="insert ordered list"> </div>
+    <div class="ul-icon tool-bar-button img-filter"
+	 (mousedown)="insertUl($event)"
+	 title="insert unordered list"> </div>
+    <!-- justifiers -->
+    <div class="justify-right-icon tool-bar-button img-filter"
+	 [ngClass]="justify_right"
+	 (mousedown)="justifyRight($event)"> </div>
+    <div class="justify-center-icon tool-bar-button img-filter"
+	 [ngClass]="justify_center"
+	 (mousedown)="justifyCenter($event)"> </div>
+    <div class="justify-left-icon tool-bar-button img-filter"
+	 [ngClass]="justify_left"
+	 (mousedown)="justifyLeft($event)"> </div>
+    <!-- indentations -->
+    <div class="indent-icon tool-bar-button img-filter"
+	 (mousedown)="indent($event)"
+	 title="indent"> </div>
+    <div class="outdent-icon tool-bar-button img-filter"
+	 (mousedown)="outdent($event)"
+	 title="outdent"> </div>
+</div>
+<div id="edit-area"
+     style="outline: none;"
+     (keydown)="keyPress($event)"
+     (click)="checkDecorations()"
+     contenteditable="true">
 </div>
 
+<!-- <menu></menu> -->

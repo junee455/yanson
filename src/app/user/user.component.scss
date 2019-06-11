@@ -1,0 +1,54 @@
+// * {
+//     padding: 5px;
+//     margin: 5px;
+// }
+
+.post-list-sandwich {
+    padding: 0;
+    content: "";
+    width: 30px;
+    height: 30px;
+    &:after {
+	transition: 0.2s;
+	border-radius: 3px;
+	position: absolute;
+	content: "";
+	width: 30px;
+	height: 0;
+	border: 6px solid;
+	box-shadow: 0 15px;
+    }
+}
+
+.post-list-cards {
+    padding: 0;
+    content: "";
+    width: 30px;
+    height: 30px;
+    &:after {
+	transition: 0.2s;
+	border-radius: 3px;
+	position: absolute;
+	content: "";
+	width: 0px;
+	height: 0;
+	border: 6px solid;
+	box-shadow: 15px 15px, 0 15px, 15px 0;
+    }
+}
+
+.default-post {
+    padding: 5px;
+    margin: 5px;
+    border-bottom: 1px solid #AAAAAA;
+    border-radius: 0;
+}
+
+.wall-grid {
+    display: grid;
+    grid-template-columns: 10%  10% 10% 10% 10% 10% 10% 10% 10% 10%;
+}
+
+.wall-list {
+    display: block;
+}

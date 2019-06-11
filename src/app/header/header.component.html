@@ -1,0 +1,17 @@
+<div class="flex-left header"
+     style="justify-content: space-between;">
+    <div class="flex-left"
+	 style="top: 0;">
+	<div class="header-button"
+	     *ngFor="let button of buttons"
+	     (click)="goto(button.ref)">{{ button.name }}</div>
+    </div>
+
+    <div class="flex-right"
+	 style="top: 0;">
+	<!-- <div class="header-button"
+	     *ngFor="let button of rightButtons"
+	     (click)="goto(button.ref)">{{ button.name }}</div> -->
+	<ng-content></ng-content>
+    </div>
+</div>

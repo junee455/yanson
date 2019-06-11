@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import * as $ from 'jquery';
 
 @Component({
     selector: 'app-sign-up',
@@ -13,12 +14,12 @@ export class SignUpComponent implements OnInit {
     // 1 - pass and mail
     // 2 - registration finished
     state: number = 0;
-    req: any = "none";
+    // req: any = "none";
     emailCheck: string = "";
     input: boolean = false;
 
     lastTimeout: any;
-    // interface UserData {
+    // interface userData {
     // 	name: string
     // 	surname: string
     // 	nick: string
@@ -62,7 +63,7 @@ export class SignUpComponent implements OnInit {
                 button.classList.add('transparent');
                 break;
             case 1:
-                document.getElementById('carousel').style.marginLeft = "0";
+                $('#carousel').css('margin-left', '0');
                 button.classList.add('shift');
                 button.classList.remove('disabled');
                 button.classList.remove('transparent');
@@ -71,20 +72,20 @@ export class SignUpComponent implements OnInit {
                 button.innerText = "Next";
                 break;
             case 2:
-                document.getElementById('carousel').style.marginLeft = "-100%";
+                $('#carousel').css('margin-left', '-100%');
                 button.classList.remove('next-button');
                 button.classList.add('back-button');
                 button.innerText = "Back";
                 break;
             case 3:
-                document.getElementById('carousel').style.marginLeft = "-100%";
+                $('#carousel').css('margin-left', '-100%');
                 button.classList.remove('shift');
                 button.classList.remove('back-button');
                 button.classList.add('next-button');
                 button.innerText = "Finish";
                 break;
             case 4:
-                document.getElementById('carousel').style.marginLeft = "-200%";
+                $('#carousel').css('margin-left', '-200%');
                 this.nextButton(0);
                 this.backButton(0);
         }
@@ -128,11 +129,17 @@ export class SignUpComponent implements OnInit {
 
     doEmailCheck() {
         let emailRegexp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+
         if (emailRegexp.test(this.userData.email.toLowerCase())) {
             return true;
         }
         return false;
+        // console.log(thing);
+        // document.getElementsByClassName("")
+        // return true;
     }
+
     toggleEye(eye) {
         if (eye.classList.contains('eye-opened')) {
             eye.classList.remove('eye-opened');
@@ -147,10 +154,7 @@ export class SignUpComponent implements OnInit {
         }
     }
 
-    constructor(
-        private http: HttpClient) {
 
-    }
     prepareMask() {
         let mask = this.userData.password.split('').map(() => '*').join('');
         return mask;
@@ -199,7 +203,7 @@ export class SignUpComponent implements OnInit {
 
         if (this.doDataCheck() && this.state == 2) {
             this.state = 3;
-        };
+        }
         if (!this.doDataCheck() && this.state == 3) {
             this.state = 2;
         }
@@ -213,10 +217,10 @@ export class SignUpComponent implements OnInit {
         // this.checkInput(this.doDataCheck);
     }
 
-    ngAfterViewChecked() {
+    constructor(
+        private http: HttpClient) {
+
     }
 
-    ngOnInit() {
-    }
-
+    ngOnInit() { }
 }
